@@ -49,3 +49,41 @@ capabilities = ["create", "read", "update", "list"]
 }
 EOF
 ```
+
+Now you'll need to create an AppRole with appropriate policies and configure its authentication settings. Here are the steps to create an AppRole:
+
+### a. Create the AppRole:
+
+```
+vault write auth/approle/role/terraform \
+    secret_id_ttl=10m \
+    token_num_uses=10 \
+    token_ttl=20m \
+    token_max_ttl=30m \
+    secret_id_num_uses=40 \
+    token_policies=terraform
+```
+
+### Generate Role ID and Secret ID:
+
+After creating the AppRole, you need to generate a Role ID and Secret ID pair. The Role ID is a static identifier, while the Secret ID is a dynamic credential.
+
+### a. Generate Role ID:
+
+You can retrieve the Role ID using the Vault CLI:
+
+```
+vault read auth/approle/role/my-approle/role-id
+```
+
+Save the Role ID for use in your Terraform configuration.
+
+### b. Generate Secret ID:
+
+To generate a Secret ID, you can use the following command:
+
+```
+vault write -f auth/approle/role/my-approle/secret-id
+```
+
+This command generates a Secret ID and provides it in the response. Save the Secret ID securely, as it will be used for Terraform authentication.
