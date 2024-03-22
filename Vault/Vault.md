@@ -10,14 +10,21 @@ Secrets engines are Vault components which store, generate or encrypt secrets.So
 
 ### Creating a secret engine:
 
-`vault secrets enable -path=first-ssh ssh`
+```
+vault secrets enable -path=first-ssh ssh
+
+```
 
 ## Authentication
 
 To enable the AppRole authentication method in Vault, you need to use the Vault CLI or the Vault HTTP API.
 
 Run the following command to enable the AppRole authentication method:
-`vault auth enable approle`
+
+```
+vault auth enable approle
+
+```
 
 ## Policies
 
