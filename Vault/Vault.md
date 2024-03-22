@@ -23,7 +23,8 @@ Run the following command to enable the AppRole authentication method:
 
 Policies in Vault control what a user can access
 
-<code> vault policy write terraform - <<EOF
+```
+vault policy write terraform - <<EOF
 path "\*" {
 capabilities = ["list", "read"]
 }
@@ -40,5 +41,4 @@ path "auth/token/create" {
 capabilities = ["create", "read", "update", "list"]
 }
 EOF
-
-qd
+```
