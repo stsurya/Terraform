@@ -63,3 +63,11 @@ Note this is usually not required as this is part of the terraform init command.
 **terraform apply -target=”module.appgw.0"** — Apply changes only to the targeted resource.
 
 ## Destroy Your Infrastructure
+
+**terraform destroy** — Destroy the infrastructure managed by Terraform.
+
+**terraform destroy -target=”module.appgw.0"** — Destroy only the targeted resource.
+
+**terraform destroy --auto-approve** — Destroy the infrastructure without having to interactively type ‘yes’ to the plan. Useful in automation CI/CD pipelines.
+
+**terraform destroy -target="module.appgw.resource[\"key\"]"** — Destroy an instance of a resource created with for_each.
