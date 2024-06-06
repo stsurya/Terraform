@@ -27,3 +27,39 @@
 **terraform init -migrate-state** — Reconfigure a backend, and attempt to migrate any existing state.
 
 **terraform init -verify-plugins=false** — Initialize the working directory, do not verify plugins for Hashicorp signature
+
+## Download and Install Modules
+
+Note this is usually not required as this is part of the terraform init command.
+
+**terraform get** — Download and installs modules needed for the configuration.
+
+**terraform get -update** — Check the versions of the already installed modules against the available modules and installs the newer versions if available
+
+## Plan Your Infrastructure
+
+**terraform plan** — Plan will generate an execution plan, showing you what actions will be taken without actually performing the planned actions.
+
+**terraform plan -out=<path>** — Save the plan file to a given path. Can then be passed to the terraform apply command.
+
+**terraform plan -destroy** — Create a plan to destroy all objects rather than the usual actions.
+
+## Deploy Your Infrastructure
+
+**terraform apply** — Create or update infrastructure depending on the configuration files. By default, a plan will be generated first and will need to be approved before it is applied.
+
+**terraform apply -auto-approve** — Apply changes without having to interactively type ‘yes’ to the plan. Useful in automation CI/CD pipelines.
+
+**terraform apply <planfilename>** — Provide the file generated using the terraform plan -out command. If provided, Terraform will take the actions in the plan without any confirmation prompts.
+
+**terraform apply -lock=false** — Do not hold a state lock during the Terraform apply operation. Use with caution if other engineers might run concurrent commands against the same workspace.
+
+**terraform apply -parallelism=<n>** — Specify the number of operations run in parallel.
+
+**terraform apply -var="environment=dev"** — Pass in a variable value.
+
+**terraform apply -var-file="varfile.tfvars"** — Pass in variables contained in a file.
+
+**terraform apply -target=”module.appgw.0"** — Apply changes only to the targeted resource.
+
+## Destroy Your Infrastructure
