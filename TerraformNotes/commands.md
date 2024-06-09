@@ -104,3 +104,23 @@ terraform state — One of the following subcommands must be used with this comm
 Terraform import is a Terraform CLI command used to read real-world infrastructure and update its state so that future updates to the same set of infrastructure can be applied via Infrastructure as Code (IaC). It imports the pre-existing cloud resources into the Terraform state.
 
 The import functionality helps update the state locally but does not automatically create the corresponding configuration. However, the Terraform team is working hard to improve this function in upcoming releases.
+
+## Manage Your Workspaces
+
+**terraform workspace** — One of the following subcommands must be used with the workspace command. Workspaces can be useful when an engineer wants to test a slightly different version of the code. It is not recommended to use Workspaces to isolate or separate the same infrastructure between different development stages, e.g. Dev / UAT / Production, or different internal teams.
+
+**terraform workspace show** — Show the name of the current workspace.
+
+**terraform workspace list** — List your workspaces.
+
+**terraform workspace select <workspace name>** — Select a specified workspace.
+
+**terraform workspace new <workspace name>** — Create a new workspace with a specified name.
+
+**terraform workspace delete <workspace name>** — Delete a specified workspace.
+
+## View Your Outputs
+
+**terraform output** — List all the outputs currently held in your state file. These are displayed by default at the end of a terraform apply, this command can be useful if you want to view them independently.
+
+**terraform output vm1_public_ip** — List a specific output held in your state file.
