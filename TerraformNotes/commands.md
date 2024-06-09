@@ -71,3 +71,36 @@ Note this is usually not required as this is part of the terraform init command.
 **terraform destroy --auto-approve** — Destroy the infrastructure without having to interactively type ‘yes’ to the plan. Useful in automation CI/CD pipelines.
 
 **terraform destroy -target="module.appgw.resource[\"key\"]"** — Destroy an instance of a resource created with for_each.
+
+## ‘Taint’ or ‘Untaint’ Your Resources
+
+Use the taint command to mark a resource as not fully functional. It will be deleted and re-created. After re-cretion the resource will automatically be untainted.
+
+**terraform taint vm1.name** — Taint a specified resource instance.
+
+**terraform untaint vm1.name** — Untaint the already tainted resource instance.
+
+## View Your State File
+
+**terraform show** — Show the state file in a human-readable format.
+
+**terraform show <path to statefile>** — If you want to read a specific state file, you can provide the path to it. If no path is provided, the current state file is shown.
+
+## Manipulate Your State File
+
+terraform state — One of the following subcommands must be used with this command in order to manipulate the state file.
+
+**terraform state list** — Lists out all the resources that are tracked in the current state file.
+
+**terraform state mv** — Move an item in the state, for example, this is useful when you need to tell Terraform that an item has been renamed, e.g. terraform state mv vm1.oldname vm1.newname
+
+**terraform state rm** — Remove the specified instance from the state file. Useful when a resource has been manually deleted outside of Terraform.
+
+**terraform state show <resourcename>** — Show the specified resource in the state file.
+
+## Import Existing Infrastructure into Your Terraform State
+
+**terraform import <resource_ID>**
+Terraform import is a Terraform CLI command used to read real-world infrastructure and update its state so that future updates to the same set of infrastructure can be applied via Infrastructure as Code (IaC). It imports the pre-existing cloud resources into the Terraform state.
+
+The import functionality helps update the state locally but does not automatically create the corresponding configuration. However, the Terraform team is working hard to improve this function in upcoming releases.
