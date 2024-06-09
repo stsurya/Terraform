@@ -49,3 +49,51 @@ output "example" {
 ```
 
 you use `terraform output`command to see Id for the above example.
+
+## What is a Map in terraform ?
+
+Map is a data structure used to represent a collection of key-value pairs. It's is similar to objects in other programming languages. you can define map as below
+
+```
+variable "<variable_name>" {
+  type = map(string)
+  default = {
+    luke  = "jedi"
+    yoda  = "jedi"
+    darth = "sith"
+  }
+}
+```
+
+The following types can be used to define your map:
+
+- map(string): The values in the map are of type “string.”
+- map(number): The values in the map are of type “number” (integer or floating-point).
+- map(bool): The values in the map are of type “bool” (true or false).
+- map(list): The values in the map are lists (arrays) containing elements of the same type.
+- map(set): The values in the map are sets containing unique elements of the same type.
+- map(object({ ... })): The values in the map are objects (complex data structures) that must conform to a specific structure defined by the object’s attributes.
+
+## What is a Object in terraform ?
+
+An object is complex data structure that contains multiple attributes with specific types defined for each attribute. example is below:
+
+```
+variable "example_object" {
+  type = object({
+    attribute1 = string
+    attribute2 = number
+    attribute3 = bool
+  })
+  default = {
+    attribute1 = "value1"
+    attribute2 = 2
+    attribute3 = true
+  }
+}
+```
+
+## What is the difference between Map and Object in terraform ?
+
+- An object is a map without a defined type.
+- For example you can have a map(string) that only accepts string values and an object that is the same but can contain different types in addition to strings.
