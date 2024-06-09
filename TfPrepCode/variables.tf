@@ -7,5 +7,6 @@ variable "location" {
 }
 
 variable "storage_account_name" {
-  type = string
+  type    = list(string)
+  default = ["sauk02", "sauk03", "sauk04"]
 }
