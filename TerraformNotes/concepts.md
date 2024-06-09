@@ -97,3 +97,14 @@ variable "example_object" {
 
 - An object is a map without a defined type.
 - For example you can have a map(string) that only accepts string values and an object that is the same but can contain different types in addition to strings.
+
+## Terraform variable loading preference - How do terraform loads variables?
+
+Terraform loads variables in the following order:
+
+- Environment variables (TF*VAR* prefix).
+- Command-line flags (-var and -var-file).
+- terraform.tfvars and terraform.tfvars.json.
+- Any .auto.tfvars or .auto.tfvars.json files.
+- Variable definitions in the configuration.
+- Prompting the user for input if the variable is not set.
