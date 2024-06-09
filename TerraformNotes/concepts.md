@@ -102,9 +102,13 @@ variable "example_object" {
 
 Terraform loads variables in the following order:
 
-- Environment variables (TF*VAR* prefix).
+- Environment variables (`TF_VAR_` prefix).
 - Command-line flags (-var and -var-file).
 - terraform.tfvars and terraform.tfvars.json.
 - Any .auto.tfvars or .auto.tfvars.json files.
 - Variable definitions in the configuration.
 - Prompting the user for input if the variable is not set.
+
+## Terraform locals
+
+while input variables (variables.tf) are used to accept values from the user or calling module, locals are intended for internal computation and managing repeated or derived values within the Terraform configuration. They enhance readability, reduce redundancy, and allow for more maintainable and organized code.
