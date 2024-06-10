@@ -181,3 +181,25 @@ Terraform `for_each` is a meta argument that helps in creating multiple instance
 
 - **Explicit Keys for Resource Management:** Terraform uses keys to uniquely identify each instance of a resource. Lists inherently use integer indices as keys, but these indices can lead to unintended resource replacements if the list order changes.
 - **Resource Addressing Stability:** Explicitly defined keys provide stability in resource addressing. This stability is crucial for maintaining the state file and avoiding resource churn.
+
+Example:
+
+```
+variable "storage_account_name" {
+  type    = set(string)
+  default = ["sauks028742", "sauks03", "sauks04"]
+}
+
+resource "azurerm_storage_account" "example" {
+  for_each                 = var.storage_account_name
+  name                     = each.value
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  tags = {
+    Name = each.value
+    ID   = each.key
+  }
+}
+```
