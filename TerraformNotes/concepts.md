@@ -140,7 +140,7 @@ resource "azurerm_storage_account" "example" {
 While the count meta argument is a powerful feature, there are some limitations and considerations:
 
 - Limited dynamic scaling: The count argument is evaluated during the planning phase, and the resources are provisioned based on that count. If you need dynamic scaling (e.g., adjusting the count based on runtime conditions), Terraform’s count might not be the most suitable option.
-- Limited Logic: The count feature primarily relies on simple numeric values. If you need more complex logic or conditional creation of resources, you might need to consider other features like Terraform for_each.
+- Limited Logic: The count feature primarily relies on simple numeric values. If you need more complex logic or conditional creation of resources, you might need to consider other features like Terraform `for_each`.
 - Unintended changes based on ordering: When using count, the resource instances are identified by an index. Modifying an element anywhere in between the list causes unintended changes for all subsequent elements.
 - count arguments cannot be directly used on sets and maps because they don't have any concept of indexing.
 
@@ -170,3 +170,14 @@ resource "my_resource" "example" {
 ```
 
 Note: Keys function will return a list.
+
+## What is Terraform for_each ?
+
+Terraform `for_each` is a meta argument that helps in creating multiple instances of a defined resource. It also provides us with the flexibility of dynamically setting the attributes of each resource instance created, depending on the type of variables being used to create real-world replicas.
+
+`for_each` primarily works with a set of strings `(set(string))` and map of strings `(map(string))`. The provided string values are used to set instance specific attributes.
+
+### Why for_each Doesn't Directly Support Lists ?
+
+- **Explicit Keys for Resource Management:** Terraform uses keys to uniquely identify each instance of a resource. Lists inherently use integer indices as keys, but these indices can lead to unintended resource replacements if the list order changes.
+- **Resource Addressing Stability:** Explicitly defined keys provide stability in resource addressing. This stability is crucial for maintaining the state file and avoiding resource churn.
