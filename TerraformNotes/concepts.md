@@ -111,4 +111,34 @@ Terraform loads variables in the following order:
 
 ## Terraform locals
 
-while input variables (variables.tf) are used to accept values from the user or calling module, locals are intended for internal computation and managing repeated or derived values within the Terraform configuration. They enhance readability, reduce redundancy, and allow for more maintainable and organized code.
+If you are working on a large enterprise infrastructure then it is impossible to work without Terraform Locals. But let's see the benefits of using terraform locals in a bit more detail -
+
+Terraform locals can be re-used multiple numbers of times in the terraform configuration file.
+It can reduce the work of updating your terraform configuration at multiple places. With terraform locals you need to update its value once and it should reflect all over the place where it is referred.
+
+While input variables (variables.tf) are used to accept values from the user or calling module, locals are intended for internal computation and managing repeated or derived values within the Terraform configuration. They enhance readability, reduce redundancy, and allow for more maintainable and organized code.
+
+## Count Meta-argument.
+
+The Terraform count meta-argument simplifies the creation of multiple resource instances without having to repeat the same resource block multiple times. It can be used with both resource and module blocks. To use the count meta-argument, you need to specify the count argument within a block, which accepts a whole number value representing the number of instances you want to create.
+
+Example below:
+
+```
+resource "azurerm_storage_account" "example" {
+  name                     = var.storage_account_name[count.index]
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  count                    = length(var.storage_account_name)
+}
+```
+
+### Terraform count limitations
+
+While the count meta argument is a powerful feature, there are some limitations and considerations:
+
+- Limited dynamic scaling: The count argument is evaluated during the planning phase, and the resources are provisioned based on that count. If you need dynamic scaling (e.g., adjusting the count based on runtime conditions), Terraform’s count might not be the most suitable option.
+- Limited Logic: The count feature primarily relies on simple numeric values. If you need more complex logic or conditional creation of resources, you might need to consider other features like Terraform for_each.
+- Unintended changes based on ordering: When using count, the resource instances are identified by an index. Modifying an element anywhere in between the list causes unintended changes for all subsequent elements.
