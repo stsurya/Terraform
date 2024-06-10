@@ -142,3 +142,31 @@ While the count meta argument is a powerful feature, there are some limitations 
 - Limited dynamic scaling: The count argument is evaluated during the planning phase, and the resources are provisioned based on that count. If you need dynamic scaling (e.g., adjusting the count based on runtime conditions), Terraform’s count might not be the most suitable option.
 - Limited Logic: The count feature primarily relies on simple numeric values. If you need more complex logic or conditional creation of resources, you might need to consider other features like Terraform for_each.
 - Unintended changes based on ordering: When using count, the resource instances are identified by an index. Modifying an element anywhere in between the list causes unintended changes for all subsequent elements.
+- count arguments cannot be directly used on sets and maps because they don't have any concept of indexing.
+
+**Count on maps**
+
+```
+variable "my_map" {
+  type = map(string)
+  default = {
+    key1 = "value1"
+    key2 = "value2"
+    key3 = "value3"
+  }
+}
+
+locals {
+  my_keys = keys(var.my_map)
+}
+
+resource "my_resource" "example" {
+  count = length(local.my_keys)
+
+  name  = local.my_keys[count.index]
+  value = var.my_map[local.my_keys[count.index]]
+  # Additional resource configuration...
+}
+```
+
+Note: Keys function will return a list.
