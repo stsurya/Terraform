@@ -203,3 +203,9 @@ resource "azurerm_storage_account" "example" {
   }
 }
 ```
+
+## What is the difference between for_each and count ?
+
+- count works with lists and will use indexing to fetch the values. Whereas for_each works with a map or set, and keys are used to fetch values.
+- If you remove an item from the middle of your list using count, every item after it will move down to take its place and terraform will create them all over again. With for_each each instance will be having a key, eventhough if we remove one item it won't creata any impact.
+- for_each will give you more freedom and control.
