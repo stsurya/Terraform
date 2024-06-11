@@ -265,3 +265,32 @@ subnets = [
 - **for_each:** The complex value to iterate over.
 - **iterator:** (optional) Sets the name of a temporary variable that represents the current element. If not provided, the name of the variable defaults to the label of the dynamic block. An iterator has two attributes: key and value. Key is the element index. Value is the element value.
 - **content:** Defines the body of each generated block.
+
+## what is terraform lifecycle meta-argument ?
+
+- The terraform lifecycle is a nested configuration block within resource block. It is used to specify how terraform should handle the creation, modificatio or destruction of the resources.
+- This is useful in scenarios where you need to protect items from getting changed ir destroyed.
+
+There are several attribute
+
+**create_before_destroy:**
+When terraform determines it needs to destroy an object aand recreate it again, the normal behaviur is to delete the existing object and next create it. Using this attribute will create the new object first and then destory the old one. This can help reduce downtime.
+
+```
+lifecycle {
+  create_before_destroy = true
+}
+```
+
+**prevent_destroy:**
+This lifecycle option prevents Terraform from accidentally removing critical resources.
+
+```
+lifecycle {
+  prevent_destroy = true
+}
+```
+
+**precondition and postcondition:**
+By adding precondition and postcondition blocks with a lifecycle block, you can specify assumptions and guarantees about how resources and data sources operate.
+The precondition block is used to ensure a certain condition is met before the resource is created, and the postcondition block is used to execute specific actions or checks after the resource is created.
