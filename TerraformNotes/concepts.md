@@ -275,6 +275,7 @@ There are several attribute
 
 **create_before_destroy:**
 When terraform determines it needs to destroy an object aand recreate it again, the normal behaviur is to delete the existing object and next create it. Using this attribute will create the new object first and then destory the old one. This can help reduce downtime.
+Some objects have restrictions that the use of this setting may cause issues with, preventing objects from existing concurrently. Hence, it is important to understand any resource constraints before using this option.
 
 ```
 lifecycle {
