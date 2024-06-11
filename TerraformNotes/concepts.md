@@ -261,7 +261,7 @@ subnets = [
 
 ### Terraform Dynamic Block Components
 
-**label:** Specifies what kind of nested block to generate. In the above example, the label is “subnet”. A subnet resource will be generated for each element in the var.subnets variable.
-**for_each:** The complex value to iterate over.
-**iterator:** (optional) Sets the name of a temporary variable that represents the current element. If not provided, the name of the variable defaults to the label of the dynamic block. An iterator has two attributes: key and value. Key is the element index. Value is the element value.
-**content:** Defines the body of each generated block.
+- **label:** Specifies what kind of nested block to generate. In the above example, the label is “subnet”. A subnet resource will be generated for each element in the var.subnets variable.
+- **for_each:** The complex value to iterate over.
+- **iterator:** (optional) Sets the name of a temporary variable that represents the current element. If not provided, the name of the variable defaults to the label of the dynamic block. An iterator has two attributes: key and value. Key is the element index. Value is the element value.
+- **content:** Defines the body of each generated block.
