@@ -6,7 +6,7 @@ module "resource_grp" {
 
 module "storageAccount" {
   source               = "./StorageAccount"
-  storage_account_name = "sauksrandom02${count.index}"
+  storage_account_name = var.storage_account_name[count.index]
   depends_on           = [module.resource_grp]
   resource_group_name  = module.resource_grp.rg_name_output
   location             = module.resource_grp.rg_location
