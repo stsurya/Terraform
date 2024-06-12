@@ -213,7 +213,7 @@ resource "azurerm_storage_account" "example" {
 ## For loop in terraform
 
 Unlike count and for_Each, the for expression primary purpose is not to deploy multiple resources. It is instead a method by which variables containing lists,sets,tuples or maps can be transformed or filtered to perform other operations.
-![Image NotVisible](image.png)
+![Image NotVisible](loops_in_Tf.png)
 
 ## Terraform Dynamic Variables
 
