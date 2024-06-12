@@ -1,31 +1,22 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=3.0.0"
-    }
-  }
+module "resource_grp" {
+  source              = "./ResourceGroup"
+  resource_group_name = "Surya"
+  location            = "west europe"
 }
 
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  features {}
+module "storageAccount" {
+  source               = "./StorageAccount"
+  storage_account_name = "sauksrandom02${count.index}"
+  depends_on           = [module.resource_grp]
+  resource_group_name  = module.resource_grp.rg_name_output
+  location             = module.resource_grp.rg_location
+  count                = 3
 }
 
-resource "azurerm_resource_group" "example" {
-  name     = var.resource_group_name
-  location = var.location
-}
-
-resource "azurerm_storage_account" "example" {
-  name                     = var.storage_account_name[count.index]
-  resource_group_name      = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  count                    = length(var.storage_account_name)
-}
-
-output "example" {
-  value = azurerm_storage_account.example[2].id
+module "VirtualNetowrk" {
+  source               = "./VirtualNetwork"
+  address_space        = ["10.10.0.0/16"]
+  virtual_network_name = "Vnet01"
+  resource_group_name  = module.resource_grp.rg_name_output
+  location             = module.resource_grp.rg_location
 }
