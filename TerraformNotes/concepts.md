@@ -295,3 +295,32 @@ lifecycle {
 **precondition and postcondition:**
 By adding precondition and postcondition blocks with a lifecycle block, you can specify assumptions and guarantees about how resources and data sources operate.
 The precondition block is used to ensure a certain condition is met before the resource is created, and the postcondition block is used to execute specific actions or checks after the resource is created.
+
+## What is Terraform Template ?
+
+Templates manage the configuration and data files, enabling granular control and making the module more flexible and reusable.
+
+Like modules, usage of input variables drives template files to shape the actual config or data files on the target resource.
+
+Template files are used to dynamically generate content. This can be useful for creating configuration files, scripts, or any text-based file where the content needs to change based on variable input.
+
+```
+// user_data.tpl
+#!/bin/bash
+echo "Hello, ${name}!"
+
+// main.tf
+data "template_file" "user_data" {
+  template = file("${path.module}/user_data.tpl")
+  vars = {
+    name = var.instance_name
+  }
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+
+  user_data = data.template_file.user_data.rendered
+}
+```
