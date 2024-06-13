@@ -323,3 +323,73 @@ resource "aws_instance" "demo_vm" {
 ## What is user_data in terraform ?
 
 In Terraform, the user_data attribute is used to pass data to an instance at launch time. It is specified as a string in the Terraform configuration file and can contain any valid data that is base64-encoded when the instance launches.
+
+## What is Terraform lookup function do ?
+
+Terraform lookup function is an inbuilt that retrives the values from a map variable or list of objects.It considers the map variable’s name to retrieve the key and default values. It returns the key value only when a matching key is found. Otherwise, it returns the default value.
+**syntax**
+`lookup(map name, key, default_value)`
+
+- It is optional to add the default value, but it's best practice to add a default to avoid any errors.
+
+**Example**
+
+```
+variable "my_map" {
+ type = map(string)
+ default = {
+   "key1" = "value1"
+   "key2" = "value2"
+ }
+}
+
+locals {
+ my_value = lookup(var.my_map, "key1", "")
+}
+```
+
+## What is terraform null_resource ?
+
+## What is Terraform null_resource ?
+
+- By the name itself we can see null - which means there won't be any infrastructure created on cloud.
+- The reason is there is no terraform state attached to this, due to which you can update your terrafrom file as many times as you want.
+
+```
+resource "null_resource" "example" {
+    provisioner "local_exec" {
+        command = "echo hello world"
+    }
+}
+```
+
+## What is trigger in null_resource ?
+
+- trigger in null_resource will holds key-value pair. But this trigger will execute for the first time, and again it'll execute whenever there is a change in the key-value.
+- If the key-value pair is changing every time, so the trigger will execute wheneve you run `terrafrom apply` command.
+
+```
+resource "null_resource" "example" {
+    triggers = {
+        id = time()
+    }
+    provisioner "local_exec" {
+        command = "echo hello world"
+    }
+}
+```
+
+In the above example, time function is just an example in which we always get a different value and due to which the local-exec provisioner gets executed all the time.
+
+## The Order of Precedence for terraform loading variables
+
+The order of precedence for variable sources is as follows with later sources taking precedence over earlier ones:
+
+1. Environment variables (least preference)
+2. The terraform.tfvars file, if present.
+
+3. The terraform.tfvars.json file, if present.
+
+4. Any _.auto.tfvars or _.auto.tfvars.json files, processed in lexical order of their filenames.
+
+5. Any -var and -var-file options on the command line, in the order they are provided.(highest prefrence)
