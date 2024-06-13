@@ -319,3 +319,7 @@ resource "aws_instance" "demo_vm" {
  }
 }
 ```
+
+## What is user_data in terraform ?
+
+In Terraform, the user_data attribute is used to pass data to an instance at launch time. It is specified as a string in the Terraform configuration file and can contain any valid data that is base64-encoded when the instance launches.
