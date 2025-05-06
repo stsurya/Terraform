@@ -435,3 +435,52 @@ terraform force-unlock <LOCK_ID>
 ```
 
 ---
+
+## what all Lifecycle Attributes do we've in Terraform ?
+
+In Terraform, the `lifecycle` block provides fine-grained control over **how Terraform manages resources**, especially during updates and deletes.
+
+---
+
+## ✅ All Terraform Lifecycle Attributes
+
+| Attribute               | Description                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `create_before_destroy` | Ensures the new resource is created **before** the old one is destroyed. Useful to avoid downtime.                                   |
+| `prevent_destroy`       | Prevents the resource from being destroyed **accidentally**. Will throw an error if you try to delete it.                            |
+| `ignore_changes`        | Instructs Terraform to **ignore changes** to specified arguments after initial creation. Useful when external systems change values. |
+| `replace_triggered_by`  | Forces a **resource replacement** when another resource or attribute changes, even if the current resource doesn’t change.           |
+| `custom_timeouts`       | (Available in some providers) Allows setting **timeouts** for create/update/delete actions.                                          |
+
+---
+
+## 🔧 Example with All Lifecycle Attributes:
+
+```
+resource "azurerm_storage_account" "example" {
+  name                     = "satejastorage"
+  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  tags = {
+    env = "prod"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = true
+    ignore_changes        = [tags]
+    replace_triggered_by  = [azurerm_resource_group.rg.name]
+  }
+}
+```
+
+---
+
+## 📝 Explanation:
+
+- ✅ `create_before_destroy`: Avoids downtime by provisioning a new resource before destroying the old one.
+- 🚫 `prevent_destroy`: Fails the plan if you try to delete this storage account.
+- 🛑 `ignore_changes`: Terraform won’t update the resource if only the `tags` change.
+- 🔄 `replace_triggered_by`: If the RG name changes, this storage account will also be re-created, even if its config didn't change.
