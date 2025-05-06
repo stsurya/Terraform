@@ -204,7 +204,7 @@ resource "azurerm_storage_account" "example" {
 Unlike count and for_Each, the for expression primary purpose is not to deploy multiple resources. It is instead a method by which variables containing lists,sets,tuples or maps can be transformed or filtered to perform other operations.
 ![Image NotVisible](loops_in_Tf.png)
 
-## Terraform Dynamic Variables
+## Terraform Dynamic Blocks
 
 Dynamic blocks in azure let you to repeat configurations insdie a resource/provisioner.datasource on variables/local/expression inside them.
 Apart from keeping your configuration DRY, Dynamic Blocks also help you generate dynamic configurations based on your input, enabling your modules to accommodate several different use cases.
@@ -380,3 +380,58 @@ The order of precedence for variable sources is as follows with later sources ta
 4. Any _.auto.tfvars or _.auto.tfvars.json files, processed in lexical order of their filenames.
 
 5. Any -var and -var-file options on the command line, in the order they are provided.(highest prefrence)
+
+---
+
+### 🔐 What is State Locking in Terraform?
+
+**State locking** in Terraform is a mechanism to **prevent multiple users or processes** from **simultaneously modifying the same state file**, which could lead to **corruption, race conditions, or inconsistent infrastructure**.
+
+---
+
+### ✅ Why is State Locking Important?
+
+Imagine two team members both running `terraform apply` at the same time:
+
+- Without locking, both may read the state file, make changes independently, and then write back — overwriting each other’s changes or causing broken deployments.
+- With locking, the first operation locks the state; the second one waits (or fails), ensuring only **one operation at a time** changes infrastructure.
+
+---
+
+### 🔧 How State Locking Works
+
+- When a **lockable backend** is used (e.g., S3 + DynamoDB, Azure Blob), Terraform **locks** the state before applying changes.
+- If a lock exists, Terraform waits (or errors out) until the lock is released.
+
+---
+
+### 🔁 Lock Lifecycle
+
+1. `terraform plan/apply` begins.
+2. Terraform checks for a lock.
+3. If no lock exists → it **acquires a lock**.
+4. While locked → other operations are **blocked**.
+5. Once the operation completes or fails → Terraform **releases the lock**.
+
+---
+
+### 💡 Backends That Support Locking
+
+| Backend   | Locking Supported? | Notes                               |
+| --------- | ------------------ | ----------------------------------- |
+| `azurerm` | ✅ Yes             | Uses blob lease for locking         |
+| `s3`      | ✅ Yes             | Requires DynamoDB table for locking |
+| `gcs`     | ✅ Yes             | Built-in locking support            |
+| `local`   | ❌ No              | No locking; risky in team use       |
+
+---
+
+### ⚠️ Manual Lock Override
+
+Sometimes a lock might be left behind (e.g., due to a crash). You can manually override:
+
+```
+terraform force-unlock <LOCK_ID>
+```
+
+---
