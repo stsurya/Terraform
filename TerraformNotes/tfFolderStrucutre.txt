@@ -39,3 +39,60 @@ terraform-infra/
 │   └── variables.tf                   # Global variables
 │
 └── README.md
+--------------------------------------------------------------------------------------------------------------
+
+terraform_project/
+│
+├── global/                          # shared configs (remote state, providers)
+│   ├── backend.tf
+│   ├── provider.tf
+│   └── variables.tf
+│
+├── aws/                             # AWS infrastructure per environment
+│   ├── dev/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── terraform.tfvars
+│   ├── qa/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── terraform.tfvars
+│   └── prod/
+│       ├── main.tf
+│       ├── variables.tf
+│       └── terraform.tfvars
+│
+├── azure/                           # Azure infrastructure per environment
+│   ├── dev/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── terraform.tfvars
+│   ├── qa/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── terraform.tfvars
+│   └── prod/
+│       ├── main.tf
+│       ├── variables.tf
+│       └── terraform.tfvars
+│
+├── gcp/                             # (Optional, if you expand to GCP)
+│   ├── dev/
+│   ├── qa/
+│   └── prod/
+│
+└── modules/                         # Reusable modules for all clouds
+    ├── aws/
+    │   ├── vpc/
+    │   ├── ec2/
+    │   └── s3/
+    │
+    ├── azure/
+    │   ├── virtual_network/
+    │   ├── vm/
+    │   └── function_app/
+    │
+    └── gcp/
+        ├── vpc/
+        ├── gke/
+        └── storage/
