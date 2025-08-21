@@ -86,3 +86,14 @@ If a state file is corrupted or accidentally deleted, my first step is to check 
 ## Suppose your team uses remote backend with state locking enabled, but a colleague force-terminates a terraform apply. What issues can arise and how do you fix them?
 
 When using a remote backend with state locking, if a colleague force-terminates an apply, Terraform may leave the state locked. This blocks further operations and could leave resources half-created. The fix is to use terraform force-unlock <LOCK_ID> to release the stale lock, then run terraform plan to check for drift. If resources were created but not recorded in state, I’d use terraform import to reconcile them. This ensures state and infrastructure are back in sync.
+
+## What risks are there in using force-unlock, and how do you mitigate them?
+
+The main risk of using terraform force-unlock is that it can lead to state corruption if another apply is still running, or it may leave Terraform unaware of resources that were created before the interrupted apply. To mitigate this, I first confirm no one else is running Terraform, then force-unlock, and immediately run a terraform plan to check for inconsistencies. If drift exists, I use terraform import or refresh to reconcile state. Storing state in a versioned backend also gives a safety net in case the state becomes corrupted.
+
+## How do you perform a state migration from local to remote backend ?
+To migrate state from local to Azure, I first create an Azure storage account and container. Then, I update the backend block in Terraform to point to Azure Blob Storage. Finally, I run `terraform init -migrate-state`, which uploads the existing local state to the remote backend. From then on, the state is stored in Azure for collaboration and locking. I also recommend enabling blob versioning for recovery.
+
+## What will happen If I don't use -migrate-state flag while migrating state file ?
+
+If I don’t use -migrate-state when switching to a remote backend, Terraform won’t copy the existing local state to Azure. The remote backend will start with an empty state, which makes Terraform think no resources exist. This can lead to resource duplication, drift, or require a full manual import of every resource. That’s why using -migrate-state is the safe and recommended way
