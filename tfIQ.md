@@ -96,7 +96,11 @@ To migrate state from local to Azure, I first create an Azure storage account an
 
 ## What will happen If I don't use -migrate-state flag while migrating state file ?
 
-If I don’t use -migrate-state when switching to a remote backend, Terraform won’t copy the existing local state to Azure. The remote backend will start with an empty state, which makes Terraform think no resources exist. This can lead to resource duplication, drift, or require a full manual import of every resource. That’s why using -migrate-state is the safe and recommended way
+If I don’t use -migrate-state when switching to a remote backend, Terraform won’t copy the existing local state to Azure. The remote backend will start with an empty state, which makes Terraform think no resources exist. This can lead to resource duplication, drift, or require a full manual import of every resource. That’s why using -migrate-state is the safe and recommended way.
+
+## Explain how to recover if someone already forgot -migrate-state and accidentally initialized remote state as empty?
+
+If I accidentally initialized a remote backend without -migrate-state, Terraform would think the state is empty and try to recreate resources. To recover, I’d stop any apply, then upload my local terraform.tfstate file into the remote backend manually or restore from a backup if available. If both are lost, I’d use terraform import to rebuild state from existing infrastructure. This way, Terraform regains awareness of resources without re-creating them.”
 
 ## In what situations would you use terraform state rm or terraform import?
 
