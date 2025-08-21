@@ -123,3 +123,25 @@ Reusability: Different projects or environments simply call the module with diff
 Best practices: I keep state isolated per environment and per project, add feature flags (like enable_nat or enable_flow_logs), and enforce common tagging for governance.
 
 This way, I end up with one VPC module that multiple teams can use, while maintaining consistency, isolation, and scalability.
+
+## What’s your approach for handling module versioning in a product-based company with many teams depending on shared modules?
+
+In a product-based company where many teams consume shared Terraform modules, I treat modules like versioned software packages.
+
+* **Versioning Strategy:** I follow **semantic versioning** (`MAJOR.MINOR.PATCH`).
+
+  * **PATCH** → bug fixes, safe to upgrade.
+  * **MINOR** → backward-compatible enhancements.
+  * **MAJOR** → breaking changes.
+* **Publishing:** Modules are stored in a central Git repo or a private Terraform registry. Each release is tagged so teams can pin exact versions instead of tracking `main`.
+* **Consumption:** Teams always consume modules with an explicit version constraint, e.g.:
+
+  ```
+  source  = "git::ssh://git@company.com/terraform-modules/vpc.git?ref=v1.2.0"
+  ```
+
+  This ensures they only upgrade when they’re ready.
+* **Change Management:** For breaking changes, I publish a migration guide or provide feature flags so adoption can be gradual.
+* **Testing:** We maintain a CI pipeline that runs validation tests on every module change to prevent regressions before tagging a release.
+
+This way, shared modules are reliable, upgrades are controlled, and multiple teams can move at their own pace without stepping on each other.
