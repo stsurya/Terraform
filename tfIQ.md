@@ -97,3 +97,7 @@ To migrate state from local to Azure, I first create an Azure storage account an
 ## What will happen If I don't use -migrate-state flag while migrating state file ?
 
 If I don’t use -migrate-state when switching to a remote backend, Terraform won’t copy the existing local state to Azure. The remote backend will start with an empty state, which makes Terraform think no resources exist. This can lead to resource duplication, drift, or require a full manual import of every resource. That’s why using -migrate-state is the safe and recommended way
+
+## In what situations would you use terraform state rm or terraform import?
+
+terraform state rm is used to remove a resource from Terraform’s state file without destroying it in real infrastructure — usually when you no longer want Terraform to manage it or when refactoring modules. terraform import is the opposite: it lets you bring existing infrastructure under Terraform management by mapping it into state. I use state rm to stop tracking a resource, and import to start tracking an existing one
