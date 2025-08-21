@@ -145,3 +145,7 @@ In a product-based company where many teams consume shared Terraform modules, I 
 * **Testing:** We maintain a CI pipeline that runs validation tests on every module change to prevent regressions before tagging a release.
 
 This way, shared modules are reliable, upgrades are controlled, and multiple teams can move at their own pace without stepping on each other.
+
+## How do you detect if someone made manual changes in the cloud console (infrastructure drift)?
+
+I detect drift by running terraform plan — it compares the state file with actual cloud resources and highlights manual changes. In practice, I automate this with a CI/CD pipeline that runs plan in check-only mode on a schedule, and I also rely on cloud compliance tools like AWS Config or Azure Policy for real-time alerts. Finally, we restrict console access so Terraform is the single source of truth.
