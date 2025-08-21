@@ -82,3 +82,7 @@ The Terraform state file is a critical component because it maps the resources d
 ## How do you handle a corrupted or accidentally deleted state file?
 
 If a state file is corrupted or accidentally deleted, my first step is to check if we’re using a remote backend like S3 or Azure Blob with versioning enabled and restore a previous version. If no backup exists, I would manually rebuild the state using terraform import to map each real resource back into Terraform’s management. Running terraform apply without a valid state is dangerous because Terraform might attempt to recreate everything, so restoring or reconstructing state is critical.
+
+## Suppose your team uses remote backend with state locking enabled, but a colleague force-terminates a terraform apply. What issues can arise and how do you fix them?
+
+When using a remote backend with state locking, if a colleague force-terminates an apply, Terraform may leave the state locked. This blocks further operations and could leave resources half-created. The fix is to use terraform force-unlock <LOCK_ID> to release the stale lock, then run terraform plan to check for drift. If resources were created but not recorded in state, I’d use terraform import to reconcile them. This ensures state and infrastructure are back in sync.
