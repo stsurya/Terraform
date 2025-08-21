@@ -149,3 +149,7 @@ This way, shared modules are reliable, upgrades are controlled, and multiple tea
 ## How do you detect if someone made manual changes in the cloud console (infrastructure drift)?
 
 I detect drift by running terraform plan — it compares the state file with actual cloud resources and highlights manual changes. In practice, I automate this with a CI/CD pipeline that runs plan in check-only mode on a schedule, and I also rely on cloud compliance tools like AWS Config or Azure Policy for real-time alerts. Finally, we restrict console access so Terraform is the single source of truth.
+
+## What happens if the backend becomes unavailable during terraform apply?
+
+If the backend goes down, Terraform can’t reliably track what was applied. You may end up with resources in the cloud but missing from state, and recovery requires refresh/import. The safe practice is to make backends highly available and treat CI/CD as the single entry point for applies.
