@@ -104,4 +104,22 @@ If I accidentally initialized a remote backend without -migrate-state, Terraform
 
 ## In what situations would you use terraform state rm or terraform import?
 
-terraform state rm is used to remove a resource from Terraform’s state file without destroying it in real infrastructure — usually when you no longer want Terraform to manage it or when refactoring modules. terraform import is the opposite: it lets you bring existing infrastructure under Terraform management by mapping it into state. I use state rm to stop tracking a resource, and import to start tracking an existing one
+terraform state rm is used to remove a resource from Terraform’s state file without destroying it in real infrastructure — usually when you no longer want Terraform to manage it or when refactoring modules. terraform import is the opposite: it lets you bring existing infrastructure under Terraform management by mapping it into state. I use state rm to stop tracking a resource, and import to start tracking an existing one.
+
+## How would you design a Terraform module for a reusable VPC that can be consumed across multiple projects?
+
+I would design the VPC module to be fully reusable, environment-agnostic, and region-agnostic, so it can serve multiple projects consistently.
+
+Structure: I keep the module self-contained with main.tf, variables.tf, outputs.tf, and a README. The module only defines how to build the VPC and subnets, but never hardcodes environment or region details.
+
+Inputs: I expose variables like cidr_block, public_subnets, private_subnets, project, env, and tags. This lets each project pass in its own CIDRs, regions, and naming details.
+
+Implementation: Inside the module, I use for_each to create subnets across AZs, and I apply a consistent naming convention like <project>-<env>-subnet-<az>.
+
+Outputs: I output useful identifiers such as vpc_id, public_subnet_ids, and private_subnet_ids, so other modules like EKS, RDS, or application gateways can consume them without duplicating logic.
+
+Reusability: Different projects or environments simply call the module with different tfvars (for example, dev, qa, prod) instead of duplicating code.
+
+Best practices: I keep state isolated per environment and per project, add feature flags (like enable_nat or enable_flow_logs), and enforce common tagging for governance.
+
+This way, I end up with one VPC module that multiple teams can use, while maintaining consistency, isolation, and scalability.
