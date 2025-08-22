@@ -1,0 +1,117 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  terraformVersion: "1.5.7"
+  serviceConnection: "AzureSPNConnection"
+
+stages:
+  # -----------------
+  # Stage 1: DEV (No Approval)
+  # -----------------
+  - stage: Dev
+    displayName: "Deploy to Dev"
+    jobs:
+      - job: DeployDev
+        displayName: "Deploy to Dev"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - script: echo "Deploying to Dev environment..."
+          - task: TerraformInstaller@1
+            inputs:
+              terraformVersion: $(terraformVersion)
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Init - Dev"
+            inputs:
+              provider: "azurerm"
+              command: "init"
+              backendServiceArm: $(serviceConnection)
+              backendAzureRmResourceGroupName: "rg-tfstate"
+              backendAzureRmStorageAccountName: "sttfstate001"
+              backendAzureRmContainerName: "tfstate"
+              backendAzureRmKey: "dev.tfstate"
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Apply - Dev"
+            inputs:
+              provider: "azurerm"
+              command: "apply"
+              environmentServiceNameAzureRM: $(serviceConnection)
+              args: "-auto-approve"
+
+  # -----------------
+  # Stage 2: TEST (Approval Gate)
+  # -----------------
+  - stage: Test
+    displayName: "Deploy to Test"
+    dependsOn: Dev
+    jobs:
+      - deployment: DeployToTest
+        displayName: "Deploy to Test Environment"
+        environment: "Test" # Must match Environment name in ADO
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Deploying to Test environment..."
+                - task: TerraformInstaller@1
+                  inputs:
+                    terraformVersion: $(terraformVersion)
+                - task: TerraformTaskV4@4
+                  displayName: "Terraform Init - Test"
+                  inputs:
+                    provider: "azurerm"
+                    command: "init"
+                    backendServiceArm: $(serviceConnection)
+                    backendAzureRmResourceGroupName: "rg-tfstate"
+                    backendAzureRmStorageAccountName: "sttfstate001"
+                    backendAzureRmContainerName: "tfstate"
+                    backendAzureRmKey: "test.tfstate"
+                - task: TerraformTaskV4@4
+                  displayName: "Terraform Apply - Test"
+                  inputs:
+                    provider: "azurerm"
+                    command: "apply"
+                    environmentServiceNameAzureRM: $(serviceConnection)
+                    args: "-auto-approve"
+
+  # -----------------
+  # Stage 3: PROD (Approval Gate)
+  # -----------------
+  - stage: Prod
+    displayName: "Deploy to Prod"
+    dependsOn: Test
+    jobs:
+      - deployment: DeployToProd
+        displayName: "Deploy to Prod Environment"
+        environment: "Prod" # Must match Environment name in ADO
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Deploying to Prod environment..."
+                - task: TerraformInstaller@1
+                  inputs:
+                    terraformVersion: $(terraformVersion)
+                - task: TerraformTaskV4@4
+                  displayName: "Terraform Init - Prod"
+                  inputs:
+                    provider: "azurerm"
+                    command: "init"
+                    backendServiceArm: $(serviceConnection)
+                    backendAzureRmResourceGroupName: "rg-tfstate"
+                    backendAzureRmStorageAccountName: "sttfstate001"
+                    backendAzureRmContainerName: "tfstate"
+                    backendAzureRmKey: "prod.tfstate"
+                - task: TerraformTaskV4@4
+                  displayName: "Terraform Apply - Prod"
+                  inputs:
+                    provider: "azurerm"
+                    command: "apply"
+                    environmentServiceNameAzureRM: $(serviceConnection)
+                    args: "-auto-approve"
